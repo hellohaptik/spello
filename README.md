@@ -1,5 +1,5 @@
 <p align="center">
-    <img src=".github/logo.png" width="350", height="220">
+    <img src="logo.png" width="350", height="220">
 </p> 
 <p align="center">A Fast and Smart SpellCorrection using Sound and Edit-distance based Correction available in English and 10 indian languages.      
 </p>  
