@@ -41,7 +41,7 @@
 Currently, this module is available for **English(en)** and 10 other indian languages which are **Hindi(hi)**,  **Marathi(mr)**,  **Bengali(bn)**,  **Punjabi(pa)**, **Gujarati(gu)**, **Oriya(or)**, **Tamil(ta)**, **Telegu(tl)**, **Kannada(kn)**, **Malyalam(ml)**.  
   
 <h2 align="center">💾 Installation</h2>  
-<p align="right"><a href="#spello"><sup>▴ Back to top</sup></a></p>
+<p align="right"><a href="#what-is-it"><sup>▴ Back to top</sup></a></p>
 Install the spello via `pip`
 
 ```bash  
@@ -49,7 +49,7 @@ $ pip install spello
 ```  
 
 <h2 align="center">⚡ ️Getting Started</h2> 
-<p align="right"><a href="#spello"><sup>▴ Back to top</sup></a></p>
+<p align="right"><a href="#what-is-it"><sup>▴ Back to top</sup></a></p>
   
 #### 1. **Model Initialisation**
 Initialise the model for one of the suppored languages. 
@@ -137,7 +137,7 @@ Please read the [contribution guidelines](CONTRIBUTION.md) first.
 
 
 <h2>Citing</h2>
-<p align="right"><a href="#spello"><sup>▴ Back to top</sup></a></p>
+<p align="right"><a href="#what-is-it"><sup>▴ Back to top</sup></a></p>
 
 If you use spello in a scientific publication, we would appreciate references to the following BibTex entry:
 
