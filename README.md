@@ -109,17 +109,36 @@ Here, you are also provided to customize various configuration of the model like
 >>> sp.config.symspell_allowed_distance_map = {2:0, 3: 1, 4: 2, 5: 3, 6: 3, 7: 4, 8: 4, 9:5, 10:5, 11:5, 12:5, 13: 6, 14: 6, 15: 6, 16: 6, 17: 6, 18: 6, 19: 6, 20: 6}
 # above dict signifies max edit distance possible for word of length 6 is 3, for length 7 is 4 and so on..
 ```
-*To set default config*
+*To reset to default config*
 ```python
 >>> sp.set_default_config()
 ```
 there are many more configurations which you can set, check this <a href="https://github.com/hellohaptik/spello/blob/master/spello/config.py">file</a> for more details
 
 
-## Download Models
-To get started, here are few simple models. They are trained on 30K news + 30k wikipedia sentences.
+## Get Started with Pre-trained Models
+Here are few simple models. They are trained on 30K news + 30k wikipedia sentences.
+Follow below steps to get started with these model
+1. Download model 
 - <a href="https://www.dropbox.com/s/ukz5zbe6cudb4mu/en.pkl.zip?dl=1"> en.pkl.zip (85mb) </a>
 - <a href="https://www.dropbox.com/s/ukz5zbe6cudb4mu/en.pkl.zip?dl=1"> hi.pkl.zip (85mb) </a>
+
+2. Unzip the downloaded file
+3. Init and Load the model by specifying path of unzipped file
+```python
+>>> from spello.model import SpellCorrectionModel
+>>> sp = SpellCorrectionModel(language='en')
+>>> sp.load('/path/to/file/en.pkl')
+```
+4. Run the spell correction
+```python
+>>> sp.spell_correct('i wnt to ply futbal')
+{'original_text': 'i wnt to ply futbal',
+ 'spell_corrected_text': 'i want to play football',
+ 'correction_dict': {'wnt': 'want', 'ply': 'play', 'futbal': 'football'}
+}
+
+```
 
 To train model for other languages, you can download data from <a href="https://wortschatz.uni-leipzig.de/en/download/">here </a> and follow training process.
 
