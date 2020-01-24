@@ -118,10 +118,10 @@ there are many more configurations which you can set, check this <a href="https:
 
 ## Get Started with Pre-trained Models
 Here are few simple models. They are trained on 30K news + 30k wikipedia sentences.
-Follow below steps to get started with these model
-1. Download model 
-- <a href="https://www.dropbox.com/s/ukz5zbe6cudb4mu/en.pkl.zip?dl=1"> en.pkl.zip (85mb) </a>
-- <a href="https://www.dropbox.com/s/ukz5zbe6cudb4mu/en.pkl.zip?dl=1"> hi.pkl.zip (85mb) </a>
+<br>Follow below steps to get started with these model
+1. Download model from below link
+    - English Model <a href="https://www.dropbox.com/s/ukz5zbe6cudb4mu/en.pkl.zip?dl=1"> en.pkl.zip (85mb) </a>
+    - Hindi Model <a href="https://www.dropbox.com/s/ukz5zbe6cudb4mu/en.pkl.zip?dl=1"> hi.pkl.zip (85mb) </a>
 
 2. Unzip the downloaded file
 3. Init and Load the model by specifying path of unzipped file
