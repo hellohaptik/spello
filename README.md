@@ -37,9 +37,8 @@
 
 <h2 align="center">What is it</h3>  
   
-**Spello** is a spellcorrection model using power of two model Symspell and Phoneme in backend to get the best possible spelling suggestion for misspelled words in a text. Phoneme Model uses <a href="https://en.wikipedia.org/wiki/Soundex">Soundex</a> algo in background and is responsible to suggest corrections for sound related mistakes in word. Also, we are using a modifield version of<a href="https://github.com/wolfgarbe/SymSpell"> Symspell</a> model to get spell suggestions based on edit-distances. <br>
-Currently, this module is available for **English(en)** and 10 other indian languages which are **Hindi(hi)**,  **Marathi(mr)**,  **Bengali(bn)**,  **Punjabi(pa)**, **Gujarati(gu)**, **Oriya(or)**, **Tamil(ta)**, **Telegu(tl)**, **Kannada(kn)**, **Malyalam(ml)**.  
-  
+**Spello** is a spellcorrection model built with combination of two models, <a href="https://en.wikipedia.org/wiki/Soundex">Phoneme</a> and <a href="https://github.com/wolfgarbe/SymSpell"> Symspell</a> Phoeme Model uses Soundex algo in background and suggests correct spellings using phonetic concepts to identify similar sounding words. On the other hand, Symspell Model uses concept of edit-distance in order to suggest correct spellings. Spello get's you best of both, taking into consideration context of the word as well. <br>
+Currently, this module is available for **English(en)** and  **Hindi(hi)**.
 <h2 align="center">💾 Installation</h2>  
 <p align="right"><a href="#what-is-it"><sup>▴ Back to top</sup></a></p>
 Install the spello via `pip`
@@ -47,6 +46,7 @@ Install the spello via `pip`
 ```bash  
 $ pip install spello
 ```  
+> You can either train a new model from scratch or use pre-trained model. Alternatively you can also train model for your domain and use that on priority while use pre-trained model as a fallback
 
 <h2 align="center">⚡ ️Getting Started</h2> 
 <p align="right"><a href="#what-is-it"><sup>▴ Back to top</sup></a></p>
@@ -58,8 +58,8 @@ Initialise the model for one of the suppored languages.
 >>> sp = SpellCorrectionModel(language='en')  
 ```  
 
-#### 2. Model Training
-Here, you can provide two types of training data to the model
+#### 2. Model Training - New Model
+You can choose to train model by providing data in one of the following format
 - List of text or sentences.
 - Dict having word and their corresponding count.
 
@@ -69,16 +69,16 @@ Here, you can provide two types of training data to the model
 ```
 **Training providing words counter**
 ```python 
->>> sp.train({'my': 2, 'name': 1, 'aman': 1, 'text': 10, 'corpus': 5})
+>>> sp.train({'i': 2, 'want': 1, 'play': 1, 'cricket': 10, 'mumbai': 5})
 ```
 > List of text is a recommended type for training data as here model also tries to learn context in which words are appearing, which further help to find best possible suggestion in case more than one suggestions are suggested by symspell or phoneme model
 
 #### 3. Model Prediction
 ```python  
->>> sp.spell_correct('my naem is naman')  
-{'original_text': 'my naem is naman',
- 'spell_corrected_text': 'my name is aman',
- 'correction_dict': {'naem': 'name', 'naman': 'aman'}
+>>> sp.spell_correct('i wnt to plai kricket')  
+{'original_text': 'i wnt to plai kricket',
+ 'spell_corrected_text': 'i want to play cricket',
+ 'correction_dict': {'wnt': 'want', 'plai': 'play', 'kricket': 'cricket'}
 }
 ```  
 
@@ -97,7 +97,7 @@ Load the trained model from saved path, First initialise the model and call the 
 >>> sp.load('/home/ubuntu/model.pkl')
 ```  
 
-#### 6. Customize Configuration of Model
+#### 6. Customize Configuration of Model (Optional)
 Here, you are also provided to customize various configuration of the model like 
 1. Setting minumum and maximum length eligible for spellcorrection
 ```python  
@@ -117,7 +117,7 @@ there are many more configurations which you can set, check this <a href="https:
 
 
 ## Get Started with Pre-trained Models
-Here are few simple models. They are trained on 30K news + 30k wikipedia sentences.
+We have trained a basic model on 30K news + 30k wikipedia sentences
 <br>Follow below steps to get started with these model
 1. Download model from below link
     - English Model <a href="https://www.dropbox.com/s/ukz5zbe6cudb4mu/en.pkl.zip?dl=1"> en.pkl.zip (85mb) </a>
