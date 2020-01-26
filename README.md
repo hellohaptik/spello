@@ -150,6 +150,7 @@ This software uses the following open source packages:
 - [symspell](https://github.com/wolfgarbe/SymSpell)
 
 
+## Contribution guidelines
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 Please read the [contribution guidelines](CONTRIBUTION.md) first.
