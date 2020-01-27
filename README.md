@@ -65,7 +65,7 @@ You can choose to train model by providing data in one of the following format
 
 **Training providing list of sentences**
 ```python 
->>> sp.train(['my name is aman', 'this is a text corpus'])
+>>> sp.train(['I want to play cricket', 'this is a text corpus'])
 ```
 **Training providing words counter**
 ```python 
