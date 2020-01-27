@@ -155,6 +155,12 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 
 Please read the [contribution guidelines](CONTRIBUTION.md) first.
 
+## Current Limitations
+One of the limitations of the current model is, it does not suggest corrections for any grammatical mistakes or for words in the vocabulary of the model. For example, in a sentence “I want to by Apple”, it will not suggest any correction for “by” as it is a valid English word but the correct replacement should be "buy".
+
+In a future release, we will be adding features to suggest corrections  for improper use word in a sentence.
+ 
+
 
 <h2>Citing</h2>
 <p align="right"><a href="#what-is-it"><sup>▴ Back to top</sup></a></p>
