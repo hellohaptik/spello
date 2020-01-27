@@ -37,7 +37,7 @@
 
 <h2 align="center">What is it</h3>  
   
-**Spello** is a spellcorrection model built with combination of two models, <a href="https://en.wikipedia.org/wiki/Soundex">Phoneme</a> and <a href="https://github.com/wolfgarbe/SymSpell"> Symspell</a> Phoeme Model uses Soundex algo in background and suggests correct spellings using phonetic concepts to identify similar sounding words. On the other hand, Symspell Model uses concept of edit-distance in order to suggest correct spellings. Spello get's you best of both, taking into consideration context of the word as well. <br>
+**Spello** is a spellcorrection model built with combination of two models, <a href="https://en.wikipedia.org/wiki/Soundex">Phoneme</a> and <a href="https://github.com/wolfgarbe/SymSpell"> Symspell</a> Phoneme Model uses Soundex algo in background and suggests correct spellings using phonetic concepts to identify similar sounding words. On the other hand, Symspell Model uses concept of edit-distance in order to suggest correct spellings. Spello get's you best of both, taking into consideration context of the word as well. <br>
 Currently, this module is available for **English(en)** and  **Hindi(hi)**.
 <h2 align="center">💾 Installation</h2>  
 <p align="right"><a href="#what-is-it"><sup>▴ Back to top</sup></a></p>
