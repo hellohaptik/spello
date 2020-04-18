@@ -1,9 +1,9 @@
+import re
 from collections import defaultdict
 from itertools import combinations
 from typing import Dict, List, Tuple, NamedTuple, Union
 
 from spello.utils import get_ngrams
-import re
 
 MAX_COUNT_ALLOWED = 100
 
@@ -189,6 +189,6 @@ class ContextModel(object):
         corrected_dict = self.get_corrected_words_map(corrected_sent, sentence)
         context_corrected_sentence = " " + sentence + " "
         for token, suggestion in corrected_dict.items():
-            context_corrected_sentence = re.sub(" " + token + " ", " " + suggestion + " ", context_corrected_sentence)
+            context_corrected_sentence = re.sub(" " + re.escape(token) + " ", " " + suggestion + " ", context_corrected_sentence)
         context_corrected_sentence = context_corrected_sentence.strip()
         return context_corrected_sentence, corrected_dict
