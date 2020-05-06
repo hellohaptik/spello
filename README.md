@@ -173,7 +173,7 @@ If you use spello in a scientific publication, we would appreciate references to
 ```latex
 @misc{haptik2020spello,
   title={spello},
-  author={Srivastava, Aman},
+  author={Srivastava Aman, Reddy SL Ruthvik },
   howpublished={\url{https://github.com/hellohaptik/spello}},
   year={2020}
 }
