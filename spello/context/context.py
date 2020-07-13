@@ -159,7 +159,6 @@ class ContextModel(object):
                 memory[-1].append(memory_item)
             memory = memory[1:]
 
-        print(len(memory[-1][0].decoded))
         decoded = ' '.join([suggestions[t][i] for t, i in enumerate(memory[-1][0].decoded[-sent_word_count:],
                                                                     start=2)])
         # score = memory[-1][0].score
