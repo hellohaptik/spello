@@ -41,7 +41,7 @@
 Currently, this module is available for **English(en)** and  **Hindi(hi)**.
 <h2 align="center">💾 Installation</h2>  
 <p align="right"><a href="#what-is-it"><sup>▴ Back to top</sup></a></p>
-Install the spello via `pip`
+Install spello via `pip`
 
 ```bash  
 $ pip install spello
