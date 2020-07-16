@@ -119,13 +119,15 @@ there are many more configurations which you can set, check this <a href="https:
 ## Get Started with Pre-trained Models
 We have trained a basic model on 30K news + 30k wikipedia sentences
 <br>Follow below steps to get started with these model
-1. Download model for English or Hindi from below links
-    - English 
-        - <a href="https://www.dropbox.com/s/81iag9tjgfuvnh0/en.pkl.zip?dl=1"> en-lite (83mb) </a>
-        - <a href="https://www.dropbox.com/s/v9uuv635lv1idjf/en_large.pkl.zip?dl=1"> en-large (284mb) </a>
-    - Hindi
-        - <a href="https://www.dropbox.com/s/orrjnz8q4b5sgo4/hi.pkl.zip?dl=1"> hi-lite (74mb) </a>
-        - <a href="https://www.dropbox.com/s/yqldhsz7kknojld/hi_large.pkl.zip?dl=1"> hi-large (350mb) </a>
+1. Download a pretrained model from below links
+    
+    **language**|**model**|**size**|**md5 hash**
+    :-----:|:-----:|:-----:|:-----:
+    en|[en.pkl.zip](https://haptik-website-images.haptik.ai/spello\_models/en.pkl.zip)|84M|ec55760a7e25846bafe90b0c9ce9b09f
+    en|[en\_large.pkl.zip](https://haptik-website-images.haptik.ai/spello\_models/en\_large.pkl.zip)|284M|9a4f5069b2395c9d5a1e8b9929e0c0a9 
+    hi|[hi.pkl.zip](https://haptik-website-images.haptik.ai/spello\_models/hi.pkl.zip)|75M|ad8681161932fdbb8b1368bb16b9644a
+    hi|[hi\_large.pkl.zip](https://haptik-website-images.haptik.ai/spello\_models/hi\_large.pkl.zip)|341M|0cc73068f88a73612e7dd84434ad61e6
+
 2. Unzip the downloaded file
 3. Init and Load the model by specifying path of unzipped file
 ```python
