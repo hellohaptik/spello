@@ -243,7 +243,8 @@ class SpellCorrectionModel(object):
             }
 
             suggestions_dict = {}
-            clean_text = get_clean_text(text)
+#             clean_text = get_clean_text(text)
+            clean_text = text
             tokens = clean_text.split()
             for token in tokens:
                 lowercase_token = token.lower()
