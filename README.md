@@ -37,7 +37,7 @@
 
 <h2 align="center">What is it</h3>  
   
-**Spello** is a spellcorrection model built with combination of two models, <a href="https://en.wikipedia.org/wiki/Soundex">Phoneme</a> and <a href="https://github.com/wolfgarbe/SymSpell"> Symspell</a> Phoneme Model uses Soundex algo in background and suggests correct spellings using phonetic concepts to identify similar sounding words. On the other hand, Symspell Model uses concept of edit-distance in order to suggest correct spellings. Spello get's you best of both, taking into consideration context of the word as well. <br>
+**Spello** is a spell correction model built with combination of two models, <a href="https://en.wikipedia.org/wiki/Soundex">Phoneme</a> and <a href="https://github.com/wolfgarbe/SymSpell"> Symspell</a> Phoneme Model uses Soundex algo in background and suggests correct spellings using phonetic concepts to identify similar sounding words. On the other hand, Symspell Model uses concept of edit-distance in order to suggest correct spellings. Spello get's you best of both, taking into consideration context of the word as well. <br>
 Currently, this module is available for **English(en)** and  **Hindi(hi)**.
 <h2 align="center">💾 Installation</h2>  
 <p align="right"><a href="#what-is-it"><sup>▴ Back to top</sup></a></p>
@@ -106,7 +106,7 @@ Here, you are also provided to customize various configuration of the model like
 ```  
 2. Setting Max edit distance allowed for each char level for symspell and phoneme model
 ```python
->>> sp.config.symspell_allowed_distance_map = {2:0, 3: 1, 4: 2, 5: 3, 6: 3, 7: 4, 8: 4, 9:5, 10:5, 11:5, 12:5, 13: 6, 14: 6, 15: 6, 16: 6, 17: 6, 18: 6, 19: 6, 20: 6}
+>>> sp.config.symspell_allowed_distance_map = {2:0, 3:1, 4:2, 5:3, 6:3, 7:4, 8:4, 9:5, 10:5, 11:5, 12:5, 13:6, 14:6, 15:6, 16:6, 17:6, 18:6, 19:6, 20:6}
 # above dict signifies max edit distance possible for word of length 6 is 3, for length 7 is 4 and so on..
 ```
 *To reset to default config*
