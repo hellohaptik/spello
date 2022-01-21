@@ -31,10 +31,16 @@ PHONEME_ALLOWED_DISTANCES_MAP = {
 }
 
 
+# TODO: can be written better with dataclasses
 class Config(object):
-    max_length_for_spellcorrection: int = 15
-    min_length_for_spellcorrection: int = 3
-    allow_1_extra_edit_for_char_end: bool = True
-    allow_1_extra_edit_for_char_start: bool = True
-    symspell_allowed_distance_map = SYMSPELL_ALLOWED_DISTANCES_MAP
-    phoneme_allowed_distance_map = PHONEME_ALLOWED_DISTANCES_MAP
+    def __init__(self):
+        self.max_length_for_spellcorrection: int = 15
+        self.min_length_for_spellcorrection: int = 3
+        self.allow_1_extra_edit_for_char_end: bool = True
+        self.allow_1_extra_edit_for_char_start: bool = True
+        self.symspell_allowed_distance_map = SYMSPELL_ALLOWED_DISTANCES_MAP.copy()
+        self.phoneme_allowed_distance_map = PHONEME_ALLOWED_DISTANCES_MAP.copy()
+        # 0: top suggestion
+        # 1: all suggestions of smallest edit distance
+        # 2: all suggestions <= max_edit_distance (slower, no early termination)
+        self.symspell_verbosity: int = 1

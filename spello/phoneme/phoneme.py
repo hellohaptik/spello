@@ -1,12 +1,12 @@
+import operator
 from collections import defaultdict
 from itertools import repeat
 
-from spello.utils import dameraulevenshtein, SpellSuggestions
 from spello.phoneme.constant import (
     indic_char_map,
     indic_language_chars
 )
-import operator
+from spello.utils import dameraulevenshtein, SpellSuggestions
 
 
 class PhonemeModel(object):
@@ -234,4 +234,3 @@ class PhonemeModel(object):
         suggestions.sort(key=operator.itemgetter(1))
         spell_suggestions.suggestions = suggestions
         return spell_suggestions
-

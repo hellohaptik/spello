@@ -150,16 +150,15 @@ class ContextModel(object):
                 for j, suggestion_1 in enumerate(suggestions[t - 1]):
                     for k, suggestion_2 in enumerate(suggestions[t - 2]):
                         curr_score = memory[-3][k].score \
-                            + self.model_dict.get((suggestion_2, suggestion_1), self.default_prob) \
-                            + self.model_dict.get((suggestion_1, word), self.default_prob) \
-                            + self.model_dict.get((suggestion_2, word), self.default_prob)
+                                     + self.model_dict.get((suggestion_2, suggestion_1), self.default_prob) \
+                                     + self.model_dict.get((suggestion_1, word), self.default_prob) \
+                                     + self.model_dict.get((suggestion_2, word), self.default_prob)
                         if curr_score > mx_score:
                             mx_score, pick_1, pick_2 = curr_score, j, k
                 memory_item = MemoryItem(score=mx_score, decoded=memory[-3][pick_2].decoded + (pick_2, pick_1,))
                 memory[-1].append(memory_item)
             memory = memory[1:]
 
-        print(len(memory[-1][0].decoded))
         decoded = ' '.join([suggestions[t][i] for t, i in enumerate(memory[-1][0].decoded[-sent_word_count:],
                                                                     start=2)])
         # score = memory[-1][0].score
@@ -189,6 +188,8 @@ class ContextModel(object):
         corrected_dict = self.get_corrected_words_map(corrected_sent, sentence)
         context_corrected_sentence = " " + sentence + " "
         for token, suggestion in corrected_dict.items():
-            context_corrected_sentence = re.sub(" " + re.escape(token) + " ", " " + suggestion + " ", context_corrected_sentence)
+            context_corrected_sentence = re.sub(" " + re.escape(token) + " ",
+                                                " " + suggestion + " ",
+                                                context_corrected_sentence)
         context_corrected_sentence = context_corrected_sentence.strip()
         return context_corrected_sentence, corrected_dict

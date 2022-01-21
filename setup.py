@@ -8,9 +8,9 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="spello",
-    version="1.1.0",
-    author="Aman Srivastava",
-    author_email="amans.rlx@gmail.com",
+    version="1.2.0",
+    author="Machine Learning Team @ Jio Haptik Technologies Limited",
+    author_email="machinelearning@haptik.ai",
     description="Spello: Fast and Smart Spell Correction",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -24,5 +24,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    keywords='nlp  machine learning spell correction',
+    keywords='nlp machine learning spell correction',
 )
