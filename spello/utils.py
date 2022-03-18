@@ -1,9 +1,10 @@
-from typing import Optional, List, Sequence, Any, Union
-from nltk import ngrams
-from pathlib import Path
 import errno
-import re
 import os
+import re
+from pathlib import Path
+from typing import Optional, List, Sequence, Any, Union
+
+from nltk import ngrams
 
 
 class SpellSuggestions(object):

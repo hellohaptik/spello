@@ -1,11 +1,12 @@
 import logging
-import re
-import os
 import operator
+import os
 import pickle
+import re
+import warnings
 from collections import Counter
 from pathlib import Path
-from typing import Dict, List, Tuple, Any, Union
+from typing import Dict, List, Tuple, Any, Union, Optional
 
 from spello.config import Config
 from spello.context.context import ContextModel
@@ -13,9 +14,7 @@ from spello.phoneme.phoneme import PhonemeModel
 from spello.settings import logger, loglevel
 from spello.symspell.symspell import SymSpell
 from spello.utils import get_clean_text
-
 from spello.utils import mkdirs
-
 
 ORIGINAL_TEXT = 'original_text'
 CORRECTED_TEXT = 'spell_corrected_text'
@@ -38,22 +37,20 @@ class SpellCorrectionModel(object):
 
     def __init__(
             self,
-            language: str = 'en'
+            language: str = 'en',
+            config: Optional[Config] = None
     ) -> None:
         self.language = language
         if language not in PhonemeModel.supported_languages + ['en']:
             raise Exception(f'"{language}" language is not yet supported')
 
-        self.config = None
-        self.set_default_config()
-        self.symspell_model = SymSpell(config=self.config, script=self.language)
+        self.config = config or Config()
+        self.symspell_model = None
         self.phoneme_model = None
-        if self.language in PhonemeModel.supported_languages:
-            self.phoneme_model = PhonemeModel(config=self.config, script=self.language)
         self.context_model = None
 
     def set_default_config(self):
-        self.config = Config
+        self.config = Config()
 
     def symspell_train(self, words_counter: Dict[str, int]) -> 'SymSpell':
         """
@@ -132,6 +129,7 @@ class SpellCorrectionModel(object):
             raise ValueError('Argument `data` should be either List[str] or Dict[str, int]')
 
         if isinstance(data, list):
+            # TODO: cleaning and preprocessing should really be left to the user!
             texts = [get_clean_text(text) for text in data]
             lower_case_texts = [text.lower() for text in texts]
 
@@ -161,15 +159,15 @@ class SpellCorrectionModel(object):
 
         logger.debug("Spello training completed successfully ...")
 
-    def _correct_word(self, word):
+    def suggest(self, word: str) -> List[Tuple[str, int]]:
         """
         Suggest words for given word, follow below steps:
             - check if length of word is eligible for correction from min max length allowed from config,
-                else return None
+                else return []
             - if word belong to domain word correction (created for words which occur less in domain words and are
                 replaced with most similar words, either from domain or global), return suggested word from dict
-            - if word exists in global dictionary, return None
-            - if word exists in domain dictionary, return None
+            - if word exists in global dictionary, return []
+            - if word exists in domain dictionary, return []
             - get suggestions from domain symspell & phoneme
             - if not suggestions from domain, get suggestions from global symspell and phoneme
             - filter top 5 suggestions
@@ -183,16 +181,16 @@ class SpellCorrectionModel(object):
         if ((self.config.min_length_for_spellcorrection > len(word)) or
                 (len(word) > self.config.max_length_for_spellcorrection) or
                 (re.search(r'\d', word))):
-            return None
+            return []
 
         phoneme = self.phoneme_model.spell_correct(word)
         if phoneme.is_correct:
-            return None
+            return []
         phoneme_suggestions = phoneme.suggestions
 
         symspell = self.symspell_model.spell_correct(word)
         if symspell.is_correct:
-            return None
+            return []
         symspell_suggestions = symspell.suggestions
 
         logger.debug(f"Symspell suggestions: {symspell_suggestions}")
@@ -205,13 +203,34 @@ class SpellCorrectionModel(object):
         suggestions.sort(key=operator.itemgetter(1, 2))
 
         # filtering duplicate suggestions
-        unique_suggestions = []
-        for suggestion in suggestions:
-            if suggestion[0] not in unique_suggestions:
-                unique_suggestions.append(suggestion[0])
+        unique_suggestions = set()
+        final_suggestions = []
+        for (suggestion, edit_distance, _) in suggestions:
+            if suggestion not in unique_suggestions:
+                final_suggestions.append((suggestion, edit_distance))
+                unique_suggestions.add(suggestion)
+        return final_suggestions
 
-        suggestions = unique_suggestions
-
+    def _correct_word(self, word: str) -> List[str]:
+        """
+        Suggest words for given word, follow below steps:
+            - check if length of word is eligible for correction from min max length allowed from config,
+                else return []
+            - if word belong to domain word correction (created for words which occur less in domain words and are
+                replaced with most similar words, either from domain or global), return suggested word from dict
+            - if word exists in global dictionary, return []
+            - if word exists in domain dictionary, return []
+            - get suggestions from domain symspell & phoneme
+            - if not suggestions from domain, get suggestions from global symspell and phoneme
+            - filter top 5 suggestions
+            - also add top 3 suggestions from global data up to min edit distance of above dict
+            - return final suggestions
+        Args:
+            word (str): word to be corrected
+        Returns:
+            (list): list of suggested words
+        """
+        suggestions = [suggestion for suggestion, _ in self.suggest(word)]
         return suggestions
 
     def spell_correct(self, text: str, verbose=0) -> Dict[str, Any]:
@@ -243,6 +262,7 @@ class SpellCorrectionModel(object):
             }
 
             suggestions_dict = {}
+            # TODO: cleaning and preprocessing should really be left to the user!
             clean_text = get_clean_text(text)
             tokens = clean_text.split()
             for token in tokens:
@@ -276,9 +296,25 @@ class SpellCorrectionModel(object):
     def set_state(self, state_dict: Dict[str, Any]) -> None:
         self.language = state_dict['language']
         self.config = state_dict['config']
-        self.symspell_model = state_dict['symspell_model']
-        self.phoneme_model = state_dict['phoneme_model']
-        self.context_model = state_dict['context_model']
+        if not isinstance(self.config, Config):
+            self.set_default_config()
+            warnings.warn("This model was saved on spell<1.2.0. As such due to a bug in previous versions, "
+                          "none of customisations made to the config at the time of training were saved along with "
+                          "the model. It is recommended to load the model, apply all required customizations "
+                          "to config and save it again. E.g.\n\n"
+                          "from spello.model import SpellCorrectionModel \n"
+                          "sp = SpellCorrectionModel(language='en')  \n"
+                          "sp.load('/home/ubuntu/model.pkl')\n"
+                          "sp.config.min_length_for_spellcorrection = 4 # default is 3\n"
+                          "sp.config.max_length_for_spellcorrection = 12 # default is 15\n"
+                          "sp.save(model_save_dir='/home/ubuntu/')\n\n"
+                          "After this the model will load without any warnings\n")
+        self.symspell_model: SymSpell = state_dict['symspell_model']
+        self.phoneme_model: PhonemeModel = state_dict['phoneme_model']
+        self.context_model: ContextModel = state_dict['context_model']
+        # fix all config references downstream
+        self.symspell_model.config = self.config
+        self.phoneme_model.config = self.config
 
     def load(
             self,
@@ -296,4 +332,3 @@ class SpellCorrectionModel(object):
         pickle.dump(state, open(save_dir / 'model.pkl', "wb"))
         path = os.path.join(save_dir, 'model.pkl')
         return path
-

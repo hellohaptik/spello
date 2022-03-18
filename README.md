@@ -101,8 +101,8 @@ Load the trained model from saved path, First initialise the model and call the 
 Here, you are also provided to customize various configuration of the model like 
 1. Setting minumum and maximum length eligible for spellcorrection
 ```python  
->>> sp.config.min_length_for_spellcorrection = 2 # default is 3
->>> sp.config.max_length_for_spellcorrection = 20 # default is 15
+>>> sp.config.min_length_for_spellcorrection = 4 # default is 3
+>>> sp.config.max_length_for_spellcorrection = 12 # default is 15
 ```  
 2. Setting Max edit distance allowed for each char level for symspell and phoneme model
 ```python
@@ -137,10 +137,10 @@ We have trained a basic model on 30K news + 30k wikipedia sentences
 ```
 4. Run the spell correction
 ```python
->>> sp.spell_correct('i wnt to ply futbal')
-{'original_text': 'i wnt to ply futbal',
+>>> sp.spell_correct('i wnt to plei futbal')
+{'original_text': 'i wnt to plei futbal',
  'spell_corrected_text': 'i want to play football',
- 'correction_dict': {'wnt': 'want', 'ply': 'play', 'futbal': 'football'}
+ 'correction_dict': {'wnt': 'want', 'plei': 'play', 'futbal': 'football'}
 }
 
 ```

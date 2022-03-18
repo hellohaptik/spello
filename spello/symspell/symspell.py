@@ -1,6 +1,48 @@
-import re
-import time
+"""
+LICENSES
+===
+https://github.com/ppgmg/github_public/blob/master/spell/symspell_python.py
+---
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License,
+version 3.0 (LGPL-3.0) as published by the Free Software Foundation.
+http://www.opensource.org/licenses/LGPL-3.0
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+Please acknowledge Wolf Garbe, as the original creator of SymSpell,
+(see note below) in any use.
+
+
+https://github.com/wolfgarbe/SymSpell
+---
+MIT License
+
+Copyright (c) 2018 Wolf Garbe
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 import logging
+import re
+from timeit import default_timer as timer
 
 from spello.utils import dameraulevenshtein, SpellSuggestions
 
@@ -8,7 +50,8 @@ spellcorrection_logger = logging.getLogger('spellcorrection')
 
 
 class SymSpell:
-    def __init__(self, config, max_edit_distance=3, verbose=1, script="en"):
+    # TODO: remove `verbose` as argument as it can be configured via `config`
+    def __init__(self, config, max_edit_distance=3, script="en"):
         """
         SymSpell is Symmetric Delete spelling correction algorithm
 
@@ -24,15 +67,9 @@ class SymSpell:
 
         Args:
             max_edit_distance (int): max edit distance
-            verbose (int): verbose level
             script (str): language script
         """
         self.max_edit_distance = max_edit_distance
-        self.verbose = verbose
-        # 0: top suggestion
-        # 1: all suggestions of smallest edit distance
-        # 2: all suggestions <= max_edit_distance (slower, no early termination)
-
         self.dictionary = {}
         self.longest_word_length = 0
         self.script = script
@@ -129,7 +166,7 @@ class SymSpell:
         """
         total_word_count = 0
         unique_word_count = 0
-        start_time = time.time()
+        start_time = timer()
         spellcorrection_logger.info("Creating spell check dictionary...")
         punctuation = r""",+:?!"()!'.%[]"""
         pattern = re.compile(re.escape(punctuation))
@@ -140,7 +177,7 @@ class SymSpell:
                 total_word_count += 1
                 if self.create_dictionary_entry(word):
                     unique_word_count += 1
-        run_time = time.time() - start_time
+        run_time = timer() - start_time
         spellcorrection_logger.info("%.2f seconds to run" % run_time)
         spellcorrection_logger.info("total words processed: %i" % total_word_count)
         spellcorrection_logger.info("total unique words in corpus: %i" % unique_word_count)
@@ -161,14 +198,14 @@ class SymSpell:
         """
         total_word_count = 0
         unique_word_count = 0
-        start_time = time.time()
+        start_time = timer()
         spellcorrection_logger.info("Creating spell check dictionary...")
 
         for word, count in words_counter.items():
             total_word_count += 1
             if self.create_dictionary_entry(word, count):
                 unique_word_count += 1
-        run_time = time.time() - start_time
+        run_time = timer() - start_time
         spellcorrection_logger.info("%.2f seconds to run" % run_time)
         spellcorrection_logger.info("total words processed: %i" % total_word_count)
         spellcorrection_logger.info("total unique words in corpus: %i" % unique_word_count)
@@ -213,7 +250,7 @@ class SymSpell:
             queue = queue[1:]
 
             # early exit
-            if ((self.verbose < 2) and (len(suggest_dict) > 0) and
+            if ((self.config.symspell_verbosity < 2) and (len(suggest_dict) > 0) and
                     ((len(string) - len(q_item)) > min_suggest_len)):
                 break
 
@@ -231,7 +268,7 @@ class SymSpell:
                     suggest_dict[q_item] = (self.dictionary[q_item][1],
                                             len(string) - len(q_item))
                     # early exit
-                    if (self.verbose < 2) and (len(string) == len(q_item)):
+                    if (self.config.symspell_verbosity < 2) and (len(string) == len(q_item)):
                         break
                     elif (len(string) - len(q_item)) < min_suggest_len:
                         min_suggest_len = len(string) - len(q_item)
@@ -266,7 +303,7 @@ class SymSpell:
 
                         # do not add words with greater edit distance if
                         # verbose setting not on
-                        if (self.verbose < 2) and (item_dist > min_suggest_len):
+                        if (self.config.symspell_verbosity < 2) and (item_dist > min_suggest_len):
                             pass
                         elif item_dist <= self.max_edit_distance:
                             assert sc_item in self.dictionary  # should already be in dictionary if in suggestion list
@@ -278,7 +315,7 @@ class SymSpell:
                         # with different edit distances may be entered into
                         # suggestions; trim suggestion dictionary if verbose
                         # setting not on
-                        if self.verbose < 2:
+                        if self.config.symspell_verbosity < 2:
                             suggest_dict = {k: v for k, v in suggest_dict.items() if v[1] <= min_suggest_len}
 
             # now generate deletes (e.g. a substring of string or of a delete)
@@ -288,7 +325,7 @@ class SymSpell:
 
             # do not add words with greater edit distance if verbose setting
             # is not on
-            if (self.verbose < 2) and ((len(string) - len(q_item)) > min_suggest_len):
+            if (self.config.symspell_verbosity < 2) and ((len(string) - len(q_item)) > min_suggest_len):
                 pass
             elif (len(string) - len(q_item)) < self.max_edit_distance and len(q_item) > 1:
                 for c in range(len(q_item)):  # character index
@@ -299,7 +336,7 @@ class SymSpell:
 
         # queue is now empty: convert suggestions in dictionary to
         # list for output
-        if not silent and self.verbose != 0:
+        if not silent and self.config.symspell_verbosity != 0:
             spellcorrection_logger.info("number of possible corrections: %i" % len(suggest_dict))
             spellcorrection_logger.info("edit distance for deletions: %i" % self.max_edit_distance)
 
@@ -318,7 +355,7 @@ class SymSpell:
         # outlist = sorted(as_list, key=lambda (term, (freq, dist)): (dist, -freq))
         outlist = sorted(as_list, key=lambda suggestion_tuple: (suggestion_tuple[1][1], -suggestion_tuple[1][0]))
 
-        if self.verbose == 0:
+        if self.config.symspell_verbosity == 0:
             return outlist[0]
         else:
             return outlist

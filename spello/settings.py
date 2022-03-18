@@ -1,12 +1,13 @@
-import sys
-import logging
 import contextlib
+import logging
+import sys
 
 logger = logging.getLogger(__name__)
-handler = logging.StreamHandler(stream=sys.stdout)
-handler.setLevel(level=logging.DEBUG)
-logger.addHandler(handler)
+stream_handler = logging.StreamHandler(stream=sys.stdout)
+stream_handler.setLevel(level=logging.DEBUG)
+logger.addHandler(stream_handler)
 logger.setLevel(logging.DEBUG)
+
 
 @contextlib.contextmanager
 def loglevel(level):
