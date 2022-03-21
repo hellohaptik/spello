@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="spello",
-    version="1.2.0",
+    version="1.3.0",
     author="Machine Learning Team @ Jio Haptik Technologies Limited",
     author_email="machinelearning@haptik.ai",
     description="Spello: Fast and Smart Spell Correction",
