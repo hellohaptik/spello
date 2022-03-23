@@ -298,7 +298,7 @@ class SpellCorrectionModel(object):
         self.config = state_dict['config']
         if not isinstance(self.config, Config):
             self.set_default_config()
-            warnings.warn("This model was saved on spell<1.2.0. As such due to a bug in previous versions, "
+            warnings.warn("This model was saved on spell<1.3.0. As such due to a bug in previous versions, "
                           "none of customisations made to the config at the time of training were saved along with "
                           "the model. It is recommended to load the model, apply all required customizations "
                           "to config and save it again. E.g.\n\n"
