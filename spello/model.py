@@ -147,7 +147,7 @@ class SpellCorrectionModel(object):
             words_counter = {word.lower(): count for word, count in data.items()}
 
         words_counter = {word: count for word, count in words_counter.items()
-                         if self.config.min_length_for_spellcorrection}
+                         if len(word) >= self.config.min_length_for_spellcorrection}
 
         logger.debug("Symspell training started ...")
         # train symspell model: give suggestion based on edit distance
@@ -183,21 +183,22 @@ class SpellCorrectionModel(object):
                 (re.search(r'\d', word))):
             return []
 
-        phoneme = self.phoneme_model.spell_correct(word)
-        if phoneme.is_correct:
-            return []
-        phoneme_suggestions = phoneme.suggestions
+        phoneme_suggestions = []
+        if self.phoneme_model:
+            phoneme = self.phoneme_model.spell_correct(word)
+            if phoneme.is_correct:
+                return []
+            phoneme_suggestions = [(w, ed, 0) for (w, ed) in phoneme.suggestions]
 
-        symspell = self.symspell_model.spell_correct(word)
-        if symspell.is_correct:
-            return []
-        symspell_suggestions = symspell.suggestions
+        symspell_suggestions = []
+        if self.symspell_model:
+            symspell = self.symspell_model.spell_correct(word)
+            if symspell.is_correct:
+                return []
+            symspell_suggestions = [(w, ed, 1) for (w, ed) in symspell.suggestions]
 
         logger.debug(f"Symspell suggestions: {symspell_suggestions}")
         logger.debug(f"Phoneme suggestions: {phoneme_suggestions}")
-
-        phoneme_suggestions = [(word, edit_distance, 0) for (word, edit_distance) in phoneme_suggestions]
-        symspell_suggestions = [(word, edit_distance, 1) for (word, edit_distance) in symspell_suggestions]
 
         suggestions = list(phoneme_suggestions + symspell_suggestions)
         suggestions.sort(key=operator.itemgetter(1, 2))
@@ -313,15 +314,18 @@ class SpellCorrectionModel(object):
         self.phoneme_model: PhonemeModel = state_dict['phoneme_model']
         self.context_model: ContextModel = state_dict['context_model']
         # fix all config references downstream
-        self.symspell_model.config = self.config
-        self.phoneme_model.config = self.config
+        if self.symspell_model:
+            self.symspell_model.config = self.config
+        if self.phoneme_model:
+            self.phoneme_model.config = self.config
 
     def load(
             self,
             model_path: str,
             **kwargs
     ) -> 'SpellCorrectionModel':
-        model_state = pickle.load(open(model_path, 'rb'))
+        with open(model_path, 'rb') as f:
+            model_state = pickle.load(f)
         self.set_state(model_state)
         return self
 
@@ -329,6 +333,8 @@ class SpellCorrectionModel(object):
         save_dir = Path(model_save_dir)
         mkdirs(save_dir, err_if_already_exists=False)
         state = self.get_state()
-        pickle.dump(state, open(save_dir / 'model.pkl', "wb"))
+        filepath = save_dir / 'model.pkl'
+        with open(filepath, 'wb') as f:
+            pickle.dump(state, f)
         path = os.path.join(save_dir, 'model.pkl')
         return path
